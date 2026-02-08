@@ -17,7 +17,6 @@
     overflow: hidden;
   }
 
-  /* floating decorations */
   .sparkle {
     position: absolute;
     font-size: 18px;
@@ -56,7 +55,7 @@
     width: 130px;
     margin: 0 auto 18px;
     display: block;
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition: opacity 0.6s ease;
   }
 
   h1 {
@@ -97,7 +96,6 @@
     color: white;
   }
 
-  /* overlay */
   .overlay {
     position: fixed;
     inset: 0;
@@ -127,7 +125,6 @@
     position: relative;
   }
 
-  /* emoji fountain */
   .emoji {
     position: absolute;
     font-size: 22px;
@@ -242,7 +239,6 @@
 
     setTimeout(() => {
       overlayNoBtn.style.opacity = "0";
-      overlayNoBtn.style.transform = "scale(0.9)";
     }, 1200);
 
     setTimeout(() => {
@@ -255,6 +251,7 @@
 
   function overlayYes() {
     smoothText(overlayText, "I knew it");
+    swapChibi(overlayChibi, "5.png");
 
     let vib = null;
     if (navigator.vibrate) {

@@ -40,7 +40,7 @@
   /* fingerprint scanner */
   .scan-box {
     width: 100%;
-    max-width: 340px; /* BIGGER */
+    max-width: 340px;
     margin: 0 auto 26px;
     border-radius: 30px;
     overflow: hidden;
@@ -56,7 +56,6 @@
     width: 100%;
     height: auto;
     display: block;
-    background: transparent;
   }
 
   .chibi {
@@ -72,11 +71,14 @@
   }
 
   .hint {
-    font-size: 20px;
+    font-size: 18px;
     color: #ff5fa2;
-    opacity: 0.85;
-    margin-bottom: 18px;
-    animation: breathe 2.6s ease-in-out infinite;
+    opacity: 0.9;
+    margin-bottom: 20px;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: breathe 2.8s ease-in-out infinite;
   }
 
   @keyframes breathe {
@@ -100,7 +102,6 @@
   .proceed-btn.show {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(0);
   }
 </style>
 </head>
@@ -127,7 +128,7 @@
       id="scanVideo"
       poster="finger.png"
       playsinline
-      preload="metadata"
+      preload="auto"
       muted>
       <source src="finger.mp4" type="video/mp4">
     </video>
@@ -136,9 +137,9 @@
   <!-- chibi -->
   <img src="7.png" class="chibi">
 
-  <!-- hint text -->
+  <!-- instruction -->
   <div class="hint" id="hintText">
-    Place your thumb and hold for a moment
+    Place your thumb over the sensor and hold it for 20 seconds until the button appears
   </div>
 
   <!-- proceed -->
@@ -153,36 +154,40 @@
   const scanBox = document.getElementById("scanBox");
   const proceedBtn = document.getElementById("proceedBtn");
 
+  let scanCompleted = false;
+
   function startHold() {
-    if (video.ended) return;
+    if (scanCompleted) return;
     video.play();
   }
 
   function endHold() {
-    if (!video.ended) video.pause();
+    if (!scanCompleted) {
+      video.pause();
+    }
   }
 
-  // touch (mobile)
-  scanBox.addEventListener("touchstart", (e) => {
+  // touch support
+  scanBox.addEventListener("touchstart", e => {
     e.preventDefault();
     startHold();
   });
-
   scanBox.addEventListener("touchend", endHold);
   scanBox.addEventListener("touchcancel", endHold);
 
-  // mouse (desktop)
+  // mouse fallback
   scanBox.addEventListener("mousedown", startHold);
   document.addEventListener("mouseup", endHold);
 
-  // when scan completes
+  // scan complete
   video.addEventListener("ended", () => {
+    scanCompleted = true;
     proceedBtn.classList.add("show");
   });
 
+  // redirect
   proceedBtn.addEventListener("click", () => {
-    // next scene hook
-    // window.location.href = "final.html";
+    window.location.href = "certificate.html";
   });
 </script>
 

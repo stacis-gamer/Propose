@@ -19,7 +19,7 @@
 
   .container {
     text-align: center;
-    z-index: 2;
+    width: 100%;
   }
 
   .card {
@@ -28,6 +28,7 @@
     border-radius: 26px;
     box-shadow: 0 25px 55px rgba(0,0,0,0.15);
     width: min(90vw, 360px);
+    margin: 0 auto;
     animation: popIn 0.9s ease-in-out;
   }
 
@@ -41,13 +42,14 @@
     font-size: 22px;
     margin-bottom: 26px;
     line-height: 1.4;
-    transition: all 0.7s ease;
+    transition: all 0.6s ease;
   }
 
   .buttons {
     display: flex;
     gap: 16px;
     justify-content: center;
+    transition: opacity 0.6s ease;
   }
 
   button {
@@ -59,34 +61,73 @@
     transition: transform 0.35s ease, opacity 0.35s ease;
   }
 
-  .tell {
+  button:active {
+    transform: scale(0.94);
+  }
+
+  .yes {
     background: linear-gradient(135deg, #ff5fa2, #ff85c1);
     color: white;
   }
 
-  .tell:active {
-    transform: scale(0.94);
-  }
-
-  .shut {
+  .no {
     background: #f26b6b;
     color: white;
   }
 
-  .shut:active {
-    transform: scale(0.94);
+  .proceed {
+    background: linear-gradient(135deg, #ff5fa2, #ff85c1);
+    color: white;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
   }
 
   .chibi {
     width: 130px;
     margin: 26px auto 0;
     display: block;
-    animation: floaty 3.5s ease-in-out infinite;
+    animation: floaty 3.8s ease-in-out infinite;
   }
 
   @keyframes floaty {
     0%,100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }
+  }
+
+  /* redirect overlay */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,230,240,0.96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+    z-index: 20;
+  }
+
+  .overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .redirect-text {
+    font-size: 24px;
+    color: #ff5fa2;
+    animation: breathe 2.5s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%,100% { opacity: 0.9; }
+    50% { opacity: 0.4; }
   }
 </style>
 </head>
@@ -101,27 +142,81 @@
       I have a question for you
     </h1>
 
-    <div class="buttons">
-      <button class="tell" onclick="tellMe()">Tell me</button>
-      <button class="shut" onclick="shutUp()">Shut up</button>
+    <div class="buttons" id="buttons">
+      <button class="yes" onclick="yesClick()">Tell me</button>
+      <button class="no" id="noBtn" onclick="noClick()">Shut up</button>
     </div>
   </div>
 
-  <!-- Chibi below -->
-  <img src="propose_chibi.png" class="chibi" id="chibi">
+  <img src="5.png" class="chibi" id="chibi">
 
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="redirect-text" id="redirectText">redirecting…</div>
 </div>
 
 <script>
   const text = document.getElementById("text");
+  const chibi = document.getElementById("chibi");
+  const noBtn = document.getElementById("noBtn");
+  const buttons = document.getElementById("buttons");
+  const overlay = document.getElementById("overlay");
+  const redirectText = document.getElementById("redirectText");
 
-  function shutUp() {
-    text.innerText = "Heyyy listen na (⁠´⁠ ⁠.⁠ ⁠.̫⁠ ⁠.⁠ ⁠`⁠)";
+  let noCount = 0;
+
+  function noClick() {
+    noCount++;
+
+    if (noCount === 1) {
+      text.innerText = "WTF. Listen atleast 😭🙏🏻";
+      chibi.src = "2.png";
+    } else {
+      text.innerText = "Are you kidding me 👁️👄👁️?";
+      chibi.src = "3.png";
+      teleportNo();
+    }
   }
 
-  function tellMe() {
-    // next page later
-    text.innerText = "Okay okay… just listen (⁠｡⁠･⁠ω⁠･⁠｡⁠)⁠ﾉ⁠♡";
+  function teleportNo() {
+    const x = Math.random() * 200 - 100;
+    const y = Math.random() * 140 - 70;
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+  }
+
+  function yesClick() {
+    text.innerText = "Okay… I’m telling you now (⁠灬⁠º⁠‿⁠º⁠灬⁠)⁠♡";
+    chibi.src = "1.png";
+    noBtn.style.display = "none";
+
+    buttons.innerHTML = `<button class="proceed" onclick="startRedirect()">Proceed</button>`;
+  }
+
+  function startRedirect() {
+    overlay.classList.add("show");
+
+    const lines = [
+      "redirecting…",
+      "wait a sec…",
+      "almost there…"
+    ];
+
+    let i = 0;
+    redirectText.innerText = lines[i];
+
+    const cycle = setInterval(() => {
+      i++;
+      if (i < lines.length) {
+        redirectText.innerText = lines[i];
+      } else {
+        clearInterval(cycle);
+      }
+    }, 1200);
+
+    setTimeout(() => {
+      window.location.href = "prop.html";
+    }, 3800);
   }
 </script>
 

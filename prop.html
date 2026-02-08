@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propose Day</title>
+
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #ffe6f0, #e0c3fc);
+    font-family: 'Poppins', system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  /* floating decorations */
+  .sparkle {
+    position: absolute;
+    font-size: 18px;
+    opacity: 0.5;
+    animation: float 10s linear infinite;
+  }
+
+  @keyframes float {
+    from { transform: translateY(100vh); }
+    to { transform: translateY(-120vh); }
+  }
+
+  .wrapper {
+    width: 100%;
+    padding: 0 16px;
+    z-index: 2;
+  }
+
+  .card {
+    background: white;
+    padding: 34px 30px;
+    border-radius: 28px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    max-width: 380px;
+    margin: auto;
+    text-align: center;
+    animation: popIn 0.8s ease;
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  img.chibi {
+    width: 130px;
+    margin: 0 auto 18px;
+    display: block;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  h1 {
+    color: #ff5fa2;
+    font-size: 22px;
+    margin-bottom: 26px;
+    max-width: 320px;
+    transition: opacity 0.6s ease;
+  }
+
+  .fade-in { opacity: 1; }
+  .fade-out { opacity: 0; }
+
+  .buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  button {
+    padding: 12px 28px;
+    font-size: 16px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.8s ease;
+    flex: 0 0 auto;
+  }
+
+  .yes {
+    background: linear-gradient(135deg, #ff5fa2, #ff85c1);
+    color: white;
+  }
+
+  .no {
+    background: #f26b6b;
+    color: white;
+  }
+
+  /* overlay */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,230,240,0.97);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    z-index: 20;
+  }
+
+  .overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .overlay-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
+
+  /* emoji fountain */
+  .emoji {
+    position: absolute;
+    font-size: 22px;
+    pointer-events: none;
+    animation: fountain 2.8s ease-out forwards;
+  }
+
+  @keyframes fountain {
+    0% {
+      transform: translateY(0) translateX(0) scale(0.8);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-65vh) translateX(var(--drift)) scale(1.2);
+      opacity: 0;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<script>
+  for (let i = 0; i < 14; i++) {
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.innerText = ["✨","🌷","🩷","⭐"][Math.floor(Math.random()*4)];
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.animationDuration = (8 + Math.random()*6) + "s";
+    document.body.appendChild(s);
+  }
+</script>
+
+<div class="wrapper">
+  <div class="card">
+    <img src="4.png" id="mainChibi" class="chibi">
+    <h1 id="mainText" class="fade-in">Do you know that I FIHH YOU?</h1>
+    <div class="buttons">
+      <button class="yes" onclick="mainYes()">Yes</button>
+      <button class="no" id="mainNoBtn" onclick="mainNo()">No</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-content" id="overlayContent">
+    <img src="1.png" id="overlayChibi" class="chibi">
+    <h1 id="overlayText" class="fade-in">So do you FIH ME?</h1>
+    <div class="buttons" id="overlayButtons">
+      <button class="yes" id="overlayYesBtn" onclick="overlayYes()">Yes</button>
+      <button class="no" id="overlayNoBtn" onclick="overlayNo()">No</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const mainText = document.getElementById("mainText");
+  const mainNoBtn = document.getElementById("mainNoBtn");
+  const mainChibi = document.getElementById("mainChibi");
+
+  const overlay = document.getElementById("overlay");
+  const overlayText = document.getElementById("overlayText");
+  const overlayNoBtn = document.getElementById("overlayNoBtn");
+  const overlayYesBtn = document.getElementById("overlayYesBtn");
+  const overlayButtons = document.getElementById("overlayButtons");
+  const overlayContent = document.getElementById("overlayContent");
+  const overlayChibi = document.getElementById("overlayChibi");
+
+  let overlayNoCount = 0;
+
+  function smoothText(el, text) {
+    el.classList.remove("fade-in");
+    el.classList.add("fade-out");
+    setTimeout(() => {
+      el.innerText = text;
+      el.classList.remove("fade-out");
+      el.classList.add("fade-in");
+    }, 450);
+  }
+
+  function swapChibi(imgEl, src) {
+    imgEl.style.opacity = "0";
+    setTimeout(() => {
+      imgEl.src = src;
+      imgEl.style.opacity = "1";
+    }, 300);
+  }
+
+  function mainNo() {
+    smoothText(mainText, "comeon i know you know it");
+    swapChibi(mainChibi, "3.png");
+    mainNoBtn.style.opacity = "0";
+    setTimeout(() => mainNoBtn.style.display = "none", 600);
+  }
+
+  function mainYes() {
+    swapChibi(mainChibi, "5.png");
+    overlay.classList.add("show");
+  }
+
+  function overlayNo() {
+    overlayNoCount++;
+
+    if (overlayNoCount === 1) {
+      smoothText(overlayText, "say it again?");
+      swapChibi(overlayChibi, "6.png");
+      return;
+    }
+
+    smoothText(overlayText, "You wouldn't understand like this");
+    swapChibi(overlayChibi, "7.png");
+
+    setTimeout(() => {
+      overlayNoBtn.style.opacity = "0";
+      overlayNoBtn.style.transform = "scale(0.9)";
+    }, 1200);
+
+    setTimeout(() => {
+      overlayNoBtn.style.display = "none";
+      overlayYesBtn.style.flex = "1";
+      overlayYesBtn.style.padding = "14px 0";
+      smoothText(overlayText, "now?");
+    }, 2300);
+  }
+
+  function overlayYes() {
+    smoothText(overlayText, "I knew it");
+
+    let vib = null;
+    if (navigator.vibrate) {
+      vib = setInterval(() => navigator.vibrate(120), 220);
+    }
+
+    const emojis = ["🌷","🩷","💗","💌","✨","⭐"];
+    const fountain = setInterval(() => {
+      for (let i = 0; i < 6; i++) {
+        const e = document.createElement("div");
+        e.className = "emoji";
+        e.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+        e.style.left = Math.random() * 100 + "%";
+        e.style.bottom = "0";
+        e.style.setProperty("--drift", (Math.random()*120 - 60) + "px");
+        overlayContent.appendChild(e);
+        setTimeout(() => e.remove(), 3000);
+      }
+    }, 180);
+
+    setTimeout(() => {
+      clearInterval(fountain);
+      if (vib) clearInterval(vib);
+      window.location.href = "propose.html";
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>

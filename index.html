@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propose Day</title>
+
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffe6f0, #e0c3fc);
+    font-family: 'Poppins', system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .container {
+    text-align: center;
+    z-index: 2;
+  }
+
+  .card {
+    background: white;
+    padding: 34px 30px;
+    border-radius: 26px;
+    box-shadow: 0 25px 55px rgba(0,0,0,0.15);
+    width: min(90vw, 360px);
+    animation: popIn 0.9s ease-in-out;
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  h1 {
+    color: #ff5fa2;
+    font-size: 22px;
+    margin-bottom: 26px;
+    line-height: 1.4;
+    transition: all 0.7s ease;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  button {
+    padding: 12px 26px;
+    font-size: 16px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+  }
+
+  .tell {
+    background: linear-gradient(135deg, #ff5fa2, #ff85c1);
+    color: white;
+  }
+
+  .tell:active {
+    transform: scale(0.94);
+  }
+
+  .shut {
+    background: #f26b6b;
+    color: white;
+  }
+
+  .shut:active {
+    transform: scale(0.94);
+  }
+
+  .chibi {
+    width: 130px;
+    margin: 26px auto 0;
+    display: block;
+    animation: floaty 3.5s ease-in-out infinite;
+  }
+
+  @keyframes floaty {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+    <h1 id="text">
+      Fihhmateeeeeeeeeeeee<br>
+      I have a question for you
+    </h1>
+
+    <div class="buttons">
+      <button class="tell" onclick="tellMe()">Tell me</button>
+      <button class="shut" onclick="shutUp()">Shut up</button>
+    </div>
+  </div>
+
+  <!-- Chibi below -->
+  <img src="propose_chibi.png" class="chibi" id="chibi">
+
+</div>
+
+<script>
+  const text = document.getElementById("text");
+
+  function shutUp() {
+    text.innerText = "Heyyy listen na (⁠´⁠ ⁠.⁠ ⁠.̫⁠ ⁠.⁠ ⁠`⁠)";
+  }
+
+  function tellMe() {
+    // next page later
+    text.innerText = "Okay okay… just listen (⁠｡⁠･⁠ω⁠･⁠｡⁠)⁠ﾉ⁠♡";
+  }
+</script>
+
+</body>
+</html>
